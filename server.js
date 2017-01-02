@@ -1,14 +1,12 @@
-var spawn = require('child_process').spawn;
-var child = spawn('node', ['spawned.js']);
+var fs = require('fs');
 
-child.stdout.on('data', (data) => {
-    process.stdout.write(data);
+fs.readdir('./', (error, files) => {
+    files.forEach((fileName) => {
+        fs.readFile(fileName, 'UTF-8', (error, content) => {
+            console.log(`========`+fileName+`=====`);
+            console.log(content);
+        });
+    });
 });
 
-process.stdin.on('data', (data) => {
-    child.stdin.write(data);
-
-    setTimeout(() => {
-        process.exit();
-    }, 100);
-});
+console.log('Read');
