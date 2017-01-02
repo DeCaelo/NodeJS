@@ -1,15 +1,14 @@
-var questionHandler = require('./questionHandler');
+var spawn = require('child_process').spawn;
+var child = spawn('node', ['spawned.js']);
 
-var questions = [
-    "Comment t'appelles-tu ? ",
-    "Que fais-tu dans la vie ? ",
-    "Quel est ton langage de programmation préféré ? "
-];
+child.stdout.on('data', (data) => {
+    process.stdout.write(data);
+});
 
-var attributes = ['name', 'hobby', 'lg'];
+process.stdin.on('data', (data) => {
+    child.stdin.write(data);
 
-questionHandler
-    .setQuestions(questions)
-    .setAttributes(attributes)
-    .ask()
-;
+    setTimeout(() => {
+        process.exit();
+    }, 100);
+});
