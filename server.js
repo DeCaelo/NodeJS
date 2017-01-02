@@ -1,12 +1,9 @@
 var fs = require('fs');
 
-fs.readdir('./', (error, files) => {
-    files.forEach((fileName) => {
-        fs.readFile(fileName, 'UTF-8', (error, content) => {
-            console.log(`========`+fileName+`=====`);
-            console.log(content);
-        });
-    });
-});
+var content = `
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. In adipisci sint reiciendis, corrupti, soluta nisi numquam officiis vero magni illo eaque doloremque eveniet quo nesciunt! Non nesciunt, nemo ut necessitatibus?
+`;
 
-console.log('Read');
+fs.writeFile('test.txt', content.trim(), (error, file) => {
+    console.log('File created');
+});
