@@ -1,13 +1,18 @@
+<!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <body>
-        <form action="" method="POST">
-            <input type="text" name="username" />
-            <input type="password" name="password" />
-            <input type="date" name="date" />
+<head>
+    <meta charset="utf-8">
+    <title>Websocket</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <h1>Websocket</h1>
+    <div class="messages"></div>
+    <form action="javascript:void(0)">
+        <label for="message">&gt;</label>
+        <input type="text" id="message" required autofocus />
+    </form>
 
-            <button>Envoyer</button>
-        </form>
-    </body>
+    <script src="ws-client.js"></script>
+</body>
 </html>

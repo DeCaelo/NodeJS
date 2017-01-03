@@ -1,23 +1,13 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
+var webSocketServer = require('ws').Server;
+var wss = new webSocketServer({port: 3000});
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('./public'));
+wss.on('connection', (ws) => {
+    console.log('Connected');
+    ws.send('Welcome!');
 
-app.get('/hello', (req, res) => {
-    console.log(req.query);
-    res.send('Hello World!');
-});
-
-app.post('/', (req, res) => {
-    var data = req.body;
-    res.send(`
-    <h1>Formulaire envoyé avec les données :</h1>
-    <p>${data.username} / ${data.password} / ${data.date}</p>
-    `);
-});
-
-app.listen(3000, () => {
-  console.log('Example app listening on port http://localhost:3000');
+    ws.on('message', (message) => {
+        wss.clients.forEach((client) => {
+            client.send(message);
+        });
+    });
 });
