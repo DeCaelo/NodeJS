@@ -1,29 +1,39 @@
 var fs = require('fs');
 var http = require('http');
-var path = require('path');
+
+var data = require('./data/data.json');
+var globalRes;
 
 var server = http.createServer((req, res) => {
-    console.log(`${req.method} : request for ${req.url}`);
+    globalRes = res;
 
     if (req.url === '/') {
-        fs.readFile('./public/index.html', 'UTF-8', (err, html) => {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(html);
-        });
-    } else if (req.url.match(/.css$/)) {
-        var cssPath = path.join(__dirname, 'public', req.url);
-        var fileStream = fs.createReadStream(cssPath, 'UTF-8');
-
-        res.writeHead(200, {'Content-Type': 'text/css'});
-
-        fileStream.pipe(res);
+        res.writeHead(200, {'Content-Type': 'text/json'});
+        res.end(JSON.stringify(data));
+    } else if (req.url.match(/is-active$/)) {
+        isActive();
+    } else if (req.url.match(/is-inactive$/)) {
+        isInActive();
     } else {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.end('404 not found');
+        res.end('Not Found');
     }
-
-
 });
+
+function isActive() {
+    var isActive = data.filter((item) => {
+        return item.isActive === true;
+    });
+
+    globalRes.end(JSON.stringify(isActive));
+}
+
+function isInActive() {
+    var isInActive = data.filter((item) => {
+        return item.isActive === false;
+    });
+
+    globalRes.end(JSON.stringify(isInActive));
+}
 
 server.listen(3000);
 
