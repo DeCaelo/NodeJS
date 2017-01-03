@@ -1,13 +1,17 @@
-var webSocketServer = require('ws').Server;
-var wss = new webSocketServer({port: 3000});
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-wss.on('connection', (ws) => {
-    console.log('Connected');
-    ws.send('Welcome!');
+app.get('/', function(req, res){
+  res.sendfile('public/index.html');
+});
 
-    ws.on('message', (message) => {
-        wss.clients.forEach((client) => {
-            client.send(message);
-        });
-    });
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
