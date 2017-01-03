@@ -1,26 +1,36 @@
 var fs = require('fs');
-var readline = require('readline');
-var rl = readline.createInterface(process.stdin, process.stdout);
-var stream;
-var pseudo;
+var https = require('https');
 
-function addToStream() {
-    var question = 'Nom du chat ? ';
+var options = {
+    hostname: 'www.discogs.com',
+    port: 443,
+    path: '/sell/release/164991',
+    method: 'GET'
+};
 
-    if (stream) {
-        question = `${pseudo} : `;
-    }
+var req = https.request(options, (res) => {
+    var responseBody = '';
 
-    rl.question(question, function(data) {
-        if (!stream) {
-            stream = fs.createWriteStream(`${data}.txt`)
-            pseudo = data;
-        } else {
-            stream.write(`${pseudo} : ${data}\n`);
-        }
+    console.log('Start');
+    console.log(res.statusCode);
+    console.log(res.headers);
 
-        addToStream();
+    res.setEncoding('UTF-8');
+
+    res.on('data', (chunk) => {
+        console.log(chunk.length);
+        responseBody += chunk;
     });
-}
 
-addToStream();
+    res.on('end', () => {
+        fs.writeFile('scrapdiscogs.html', responseBody, () => {
+            console.log('File created');
+        });
+    });
+});
+
+req.on('error', (e) => {
+  console.error(e);
+});
+
+req.end();
