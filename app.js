@@ -1,8 +1,14 @@
 var express = require('express');
 var app = express();
 
-app.get('/', (req, res) => {
+app.use(express.static('./public'));
+
+app.get('/hello', (req, res) => {
   res.send('Hello World!');
+});
+
+app.post('/', (req, res) => {
+  res.send('Formulaire envoyé');
 });
 
 app.listen(3000, () => {
