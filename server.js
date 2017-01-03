@@ -1,36 +1,23 @@
 var fs = require('fs');
-var https = require('https');
+var http = require('http');
 
-var options = {
-    hostname: 'www.discogs.com',
-    port: 443,
-    path: '/sell/release/164991',
-    method: 'GET'
-};
+var server = http.createServer((req, res) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
 
-var req = https.request(options, (res) => {
-    var responseBody = '';
+    var responseBody = `
+        <html>
+            <head></head>
+            <body>
+            <h1>Je suis un serveur HTTP</h1>
+            <p>${req.url}</p>
+            <p>${req.method}</p>
+            </body>
+        </html>
+    `;
 
-    console.log('Start');
-    console.log(res.statusCode);
-    console.log(res.headers);
-
-    res.setEncoding('UTF-8');
-
-    res.on('data', (chunk) => {
-        console.log(chunk.length);
-        responseBody += chunk;
-    });
-
-    res.on('end', () => {
-        fs.writeFile('scrapdiscogs.html', responseBody, () => {
-            console.log('File created');
-        });
-    });
+    res.end(responseBody);
 });
 
-req.on('error', (e) => {
-  console.error(e);
-});
+server.listen(3000);
 
-req.end();
+console.log('Server on http://localhost:3000');
